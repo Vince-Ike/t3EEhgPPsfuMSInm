@@ -8,4 +8,8 @@ taken
 
 Goal
 -Create a prediction model in which we predict what
-makes customers happy or unhappy.
+makes customers happy or unhappy based on answers to
+asked questions.
+
+Success Metrics
+- 73% success rate
