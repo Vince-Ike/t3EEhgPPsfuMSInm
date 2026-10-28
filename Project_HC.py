@@ -9,8 +9,8 @@
 import pandas as pd
 from sklearn.model_selection import (
     train_test_split, 
-    StratifiedKFold, 
-    cross_val_score)
+    StratifiedKFold,
+    RandomizedSearchCV)
 from xgboost import XGBClassifier
 from sklearn.metrics import (
     accuracy_score,
@@ -42,17 +42,28 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y
 )
 #=================================================================
+# Define Hyperparameter Search
+#=================================================================
+
+param_grid = {
+
+    'n_estimators': [ 100, 200, 300, 400, 500],
+    'max_depth': [3, 4, 5, 6, 8],
+    'learning_rate': [0.01, 0.05, 0.08, 0.1],
+    'subsample': [0.7, 0.8, 0.9, 1.0],
+    'colsample_bytree': [0.7, 0.8, 1.0],
+    'min_child_weight': [ 1, 3, 5],
+    'gamma': [0, 0.1, 0.5]
+}
+#=================================================================
 # Initialize XGBoost Model
 #=================================================================
 xgb_model= XGBClassifier(
-    n_estimators =200,
-    max_depth = 5,
-    learning_rate = 0.05,
-    subsample = 0.8,
     random_state = 21,
+    objective = 'binary:logistic',
     eval_metric ='logloss'
-
 )
+
 # ==============================================================
 # Use 5 Fold Cross Validation
 # ===============================================================
@@ -62,30 +73,41 @@ cv = StratifiedKFold(
     random_state=21
 )
 
-cv_scores = cross_val_score(
-    xgb_model,
-    X_train,
-    y_train,
+#=================================================================
+# Configure Randomized Search
+#=================================================================
+random_search = RandomizedSearchCV(
+    estimator=xgb_model,
+    param_distributions=param_grid,
+    n_iter=30,
+    scoring='accuracy',
     cv=cv,
-    scoring='accuracy'
+    verbose=1,
+    random_state=21,
+    n_jobs=1
 )
 
-print("\n5-Fold Cross Validation Results")
-print("-----------------------------------")
-for fold, score in enumerate(cv_scores, start=1):
-    print(f"Fold {fold} Accuracy: {score:.4f}")
-print(f"Mean CV Accuracy: {cv_scores.mean():.4f}")
-print(f"Standard Deviation: {cv_scores.std():.4f}")
 #=================================================================
 # Train Model
 #=================================================================
-xgb_model.fit(X_train, y_train)
+random_search.fit(X_train, y_train)
 
+# ================================================================
+# Display Best Cross Validation
+#================================================================
+print("\nHyperparameter Optimazation Results")
+print("="* 40)
 
+print(f"Best CV Accuracy: {random_search.best_score_:.4f}")
+print("\nBest Parameters:")
+for parameter, value in random_search.best_params_.items():
+    print(f"{parameter}: {value}")
 # ============================================================
 # Generate Predictions
 # ============================================================
-y_pred = xgb_model.predict(X_test)
+best_model = random_search.best_estimator_
+
+y_pred = best_model.predict(X_test)
 
 # ============================================================
 #  Evaluate Model Performance
@@ -95,8 +117,8 @@ precision = precision_score(y_test, y_pred, zero_division=0)
 recall = recall_score(y_test, y_pred, zero_division=0)
 f1= f1_score(y_test, y_pred, zero_division=0)
 
-print("\nModel Performance")
-print("-------------------------")
+print("\nOptimized Model Performance")
+print("=" * 40)
 print(f"Accuracy:  {accuracy:.4f}")
 print(f"Precision: {precision:.4f}")
 print(f"Recall:    {recall:.4f}")
