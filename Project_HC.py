@@ -6,6 +6,7 @@
 # train an XGBoost classifier, and evaluate model
 # performance using classification metrics.
 # ============================================================
+import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from xgboost import XGBClassifier
@@ -14,7 +15,8 @@ from sklearn.metrics import (
     precision_score,
     recall_score,
     f1_score,
-    classification_report
+    classification_report,
+    confusion_matrix
 )
 
 df = pd.read_csv("/Users/vinceike/Desktop/Apziva Projects/ACME-HappinessSurvey2020.csv")
@@ -24,12 +26,20 @@ df.shape
 #==============================================================
 X = df.drop(columns=['Y'])
 y = df['Y']
-#==============================================================
-# Split data into Training and Testing
-#===============================================================
-# 80/20 Train/Test split
-# stratifying y
+# ============================================================
+# Create Training and Testing Sets
+# ============================================================
 X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.20,
+    random_state=21,
+    stratify=y
+)
+#==============================================================
+# Split data into Training and Validation
+#===============================================================
+X_fit, X_val, y_fit, y_val = train_test_split(
     X,
     y,
     test_size=0.2,
@@ -55,40 +65,91 @@ xgb_model= XGBClassifier(
 #=================================================================
 # Train Model
 #=================================================================
-xgb_model.fit(X_train, y_train)
+xgb_model.fit(X_fit, y_fit)
 
 # ============================================================
-# Generate Predictions
+# Generate Validation probabilities
 # ============================================================
-y_pred = xgb_model.predict(X_test)
+val_probs = xgb_model.predict_proba(X_val)[:,1]
+
+print("\nValidation Probabilities:")
+print(val_probs)
 
 # ============================================================
-#  Evaluate Model Performance
+#  Evaluate Different Thresholds
 # ============================================================
-accuracy = accuracy_score(y_test, y_pred)
-precision = precision_score(y_test, y_pred, zero_division=0)
-recall = recall_score(y_test, y_pred, zero_division=0)
-f1= f1_score(y_test, y_pred, zero_division=0)
+threshold_results = []
 
-print("\nModel Performance")
+thresholds = np.arange(0.30, 0.71, 0.01)
+
+for threshold in thresholds:
+    val_pred = (val_probs >= threshold).astype(int)
+
+    threshold_results.append({
+        "Threshold": threshold,
+        "Accuracy": accuracy_score(y_val, val_pred),
+        "Precison": precision_score(y_val, val_pred, zero_division=0),
+        "Recall": recall_score(y_val, val_pred, zero_division=0),
+        "F1 Score": f1_score(y_val, val_pred, zero_division=0)
+    })
+
+threshold_df = pd.DataFrame(threshold_results)
+#Display the 10 best thresholds by accuracy
+
+print("\nTop 10 Classification Thresholds")
 print("=" * 40)
-print(f"Accuracy:  {accuracy:.4f}")
-print(f"Precision: {precision:.4f}")
-print(f"Recall:    {recall:.4f}")
-print(f"F1 Score:  {f1:.4f}")
+
+print(
+    threshold_df.sort_values(
+        by=["Accuracy","F1 Score"],
+        ascending=False
+    ).head(10).to_string(index=False)
+)
+# ============================================================
+# Get the Best threshold
+# ============================================================
+
+best_threshold = threshold_df.sort_values(
+        by=["Accuracy","F1 Score"],
+        ascending=False
+    ).iloc[0]["Threshold"]
+
+print(f"\nBest Classification Threshold: {best_threshold:.2f}")
+# ============================================================
+# Retrain Model on Entire Training Set 
+# ===========================================================
+xgb_model.fit(X_train, y_train)
+y_pred_probs = xgb_model.predict_proba(X_test)[:,1]
+y_pred = (y_pred_probs >= best_threshold).astype(int)
+
 
 # ============================================================
-# Classification Report
+# 9. Evaluate Final Model
 # ============================================================
+print("\nFinal Test Model Performance")
+print("=" * 45)
 
-# Display precision, recall, F1 score, and support
-# for each target class.
+print(f"Threshold: {best_threshold:.2f}")
+print(f"Accuracy:  {accuracy_score(y_test, y_pred):.4f}")
+print(f"Precision: {precision_score(y_test, y_pred, zero_division=0):.4f}")
+print(f"Recall:    {recall_score(y_test, y_pred, zero_division=0):.4f}")
+print(f"F1 Score:  {f1_score(y_test, y_pred, zero_division=0):.4f}")
 
 print("\nClassification Report:")
-print(
-    classification_report(
-        y_test,
-        y_pred,
-        zero_division=0
-    )
-)
+print(classification_report(y_test, y_pred, zero_division=0))
+
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+# ============================================================
+# 10. Display Prediction Probabilities
+# ============================================================
+prediction_results = pd.DataFrame({
+    "Actual": y_test.values,
+    "Probability": y_pred_probs,
+    "Predicted": y_pred
+})
+
+print("\nPrediction Probabilities and Classifications")
+print("=" * 55)
+print(prediction_results.to_string(index=False))
