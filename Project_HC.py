@@ -124,7 +124,7 @@ y_pred = (y_pred_probs >= best_threshold).astype(int)
 
 
 # ============================================================
-# 9. Evaluate Final Model
+# Evaluate Final Model
 # ============================================================
 print("\nFinal Test Model Performance")
 print("=" * 45)
@@ -142,7 +142,7 @@ print("\nConfusion Matrix:")
 print(confusion_matrix(y_test, y_pred))
 
 # ============================================================
-# 10. Display Prediction Probabilities
+# Display Prediction Probabilities
 # ============================================================
 prediction_results = pd.DataFrame({
     "Actual": y_test.values,
@@ -153,3 +153,8 @@ prediction_results = pd.DataFrame({
 print("\nPrediction Probabilities and Classifications")
 print("=" * 55)
 print(prediction_results.to_string(index=False))
+# ============================================================
+# Feature Importance
+# =============================================================
+print(xgb_model.feature_importances_)
+# Results of feature importance is discuss in the readme file
