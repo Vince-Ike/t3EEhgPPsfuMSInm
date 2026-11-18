@@ -364,7 +364,7 @@ t3EEhgPPsfuMSInm/
 └── requirements.txt
 ```
 
-The dataset is required to execute the project but may need to be downloaded separately if it is not included in the repository.
+The dataset is required to execute the project and may need to be downloaded separately.
 
 ## 10. How to Run the Project
 
