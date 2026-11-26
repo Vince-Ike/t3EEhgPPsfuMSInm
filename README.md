@@ -1,58 +1,80 @@
 # Customer Happiness Prediction Using XGBoost
 
-
-**Developing a Machine Learning Classification Model to Predict Customer Happiness and Support Data-Driven Customer Experience Decisions**
+**Developing and Evaluating a Machine Learning Classification Model to Predict Customer Happiness and Support Data-Driven Customer Experience Improvements**
 
 ---
 
 ## 1. Project Overview
 
-Customer satisfaction is an important indicator of business performance, customer retention, and long-term growth. Understanding the factors associated with positive customer experiences can help organizations identify opportunities to improve their services and strengthen customer relationships.
+Customer satisfaction is an important indicator of business performance, customer retention, and long-term growth. Understanding the factors associated with positive customer experiences enables organizations to identify service improvement opportunities and make informed business decisions.
 
-This project focuses on developing a supervised machine learning classification model to predict customer happiness using the **ACME Happiness Survey 2020** dataset.
+This project was completed as part of my AI Residency at **Apziva**. The objective was to develop a supervised machine learning classification model capable of predicting customer happiness using the ACME Happiness Survey 2020 dataset.
 
-Using Python and XGBoost (Extreme Gradient Boosting), I developed a binary classification model to predict whether a customer reported a positive happiness outcome based on six survey responses.
+Using Python and XGBoost (Extreme Gradient Boosting), I developed a binary classification model to predict whether customers reported a positive experience based on six survey responses.
 
-The project emphasizes model development, prediction probability analysis, classification threshold optimization, and performance evaluation. Rather than relying exclusively on the default classification threshold of 0.50, I investigated alternative thresholds to better understand the trade-offs between accuracy, precision, recall, and F1 score.
+The project focused on:
 
-The overall objective was to develop a classification approach that could provide meaningful predictive insights while demonstrating a structured machine learning workflow.
+- Preparing and analyzing structured customer survey data.
+- Developing and configuring an XGBoost classification model.
+- Evaluating model performance using multiple classification metrics.
+- Analyzing prediction probabilities and classification thresholds.
+- Comparing model performance against a majority-class baseline.
+- Examining feature importance to identify the survey variables most influential in model predictions.
+
+### Project Success Criterion
+
+The primary performance requirement established by Apziva was:
+
+**Achieve an accuracy score of 73% or higher, or demonstrate why an alternative solution provides superior predictive value.**
+
+The final XGBoost model achieved **73.08% accuracy on the independent test dataset**, meeting the established performance benchmark.
+
+In addition, the model outperformed the majority-class baseline by 19.23 percentage points, demonstrating that it learned predictive patterns beyond simply assigning every observation to the most frequently occurring class.
+
+---
 
 ## 2. Business Problem
 
 Organizations collect customer feedback to understand satisfaction levels and identify opportunities for service improvement. However, identifying patterns associated with positive customer experiences can be challenging.
 
-The business problem addressed in this project is:
+The business problem addressed in this project was:
 
 **Can machine learning identify patterns in customer survey responses that help predict whether a customer is likely to report a positive experience?**
 
-By developing a predictive classification model, organizations could potentially use customer survey data to:
+A predictive classification model could potentially help organizations:
 
-- Identify patterns associated with positive customer experiences.
-- Better understand the relationship between survey responses and customer happiness.
-- Support customer experience analysis and service improvement initiatives.
-- Provide data-driven insights for business decision-making.
+- Identify patterns associated with positive and negative customer experiences.
+- Understand which aspects of the ordering and delivery experience are most influential in predictions.
+- Identify potential areas for customer experience improvement.
+- Support data-driven operational and customer satisfaction decisions.
 
-The model is intended to support customer experience analysis rather than replace direct customer feedback or establish causation.
+The model is intended to support customer experience analysis rather than replace direct customer feedback or establish causal relationships.
+
+---
 
 ## 3. Project Objectives
 
 The primary objectives were to:
 
-1. Prepare the survey dataset for supervised machine learning.
+1. Prepare the customer survey dataset for supervised machine learning.
 2. Develop an XGBoost binary classification model.
-3. Configure model parameters to control complexity and improve generalization.
-4. Generate prediction probabilities to evaluate classification confidence.
-5. Investigate different classification thresholds to understand their impact on model performance.
-6. Evaluate the model using multiple classification metrics.
-7. Examine feature importance to explore the contribution of survey variables to model predictions.
+3. Configure model hyperparameters to control complexity and improve generalization.
+4. Generate prediction probabilities to examine classification confidence.
+5. Evaluate classification thresholds and their impact on model performance.
+6. Achieve or exceed the established 73% accuracy benchmark.
+7. Compare model performance against a majority-class baseline.
+8. Evaluate predictive performance using accuracy, precision, recall, F1 score, and balanced accuracy.
+9. Examine feature importance to identify the strongest predictors of customer happiness.
+
+---
 
 ## 4. Dataset Description
 
 **Dataset:** ACME Happiness Survey 2020
 
-The dataset contains customer survey responses collected to evaluate customer satisfaction with an ordering and delivery experience.
+The dataset contains customer survey responses collected to evaluate satisfaction with an ordering and delivery experience.
 
-It consists of six independent predictor variables (X1–X6) and one dependent target variable (Y). Each predictor represents a specific aspect of the customer's experience, including delivery timeliness, order accuracy, pricing satisfaction, courier satisfaction, and application usability.
+It consists of six independent predictor variables (X1–X6) and one dependent target variable (Y).
 
 ### Target Variable
 
@@ -61,8 +83,6 @@ It consists of six independent predictor variables (X1–X6) and one dependent t
 | Y | Customer happiness classification | 0 = Unhappy, 1 = Happy |
 
 ### Feature Descriptions
-
-The following six features were used as independent variables in the classification model.
 
 | Feature | Description |
 |---|---|
@@ -73,79 +93,80 @@ The following six features were used as independent variables in the classificat
 | X5 | I am satisfied with my courier. |
 | X6 | The app makes ordering easy for me. |
 
-### Feature Interpretation
+These six features represent different dimensions of the customer experience, including delivery performance, order accuracy, order completeness, price satisfaction, courier satisfaction, and application usability.
 
-Each feature captures a different dimension of the customer experience:
-
-- **Delivery Performance (X1):** Evaluates whether the customer's order arrived on time.
-- **Order Accuracy (X2):** Measures whether the delivered order matched the customer's expectations.
-- **Order Completeness (X3):** Evaluates whether customers were able to order everything they intended to purchase.
-- **Price Satisfaction (X4):** Captures customers' perceptions of the value they received for the price paid.
-- **Courier Satisfaction (X5):** Reflects customer satisfaction with the courier responsible for delivery.
-- **Application Usability (X6):** Measures how easily customers can navigate and place orders through the application.
-
-Together, these features provide a structured representation of the ordering and delivery experience, allowing the machine learning model to identify patterns associated with customer happiness.
-
-The target variable (Y) serves as the classification label that the model attempts to predict.
+---
 
 ## 5. Technologies and Tools
-
-The project was implemented using Python and the following libraries:
 
 | Technology | Purpose |
 |---|---|
 | Python | Primary programming language |
 | Pandas | Dataset loading and data manipulation |
-| NumPy | Numerical operations and threshold analysis |
+| NumPy | Numerical operations and probability analysis |
 | Scikit-learn | Data splitting and model evaluation |
 | XGBoost | Gradient boosting classification |
-| GitHub | Version control and project documentation |
+| Git and GitHub | Version control and project documentation |
 
 ### Machine Learning Algorithm: XGBoost
 
-XGBoost is an optimized gradient boosting algorithm that builds an ensemble of decision trees sequentially. Each subsequent tree attempts to correct errors made by the preceding trees.
+XGBoost is an optimized gradient boosting algorithm that constructs an ensemble of decision trees sequentially, with subsequent trees attempting to correct errors made by preceding trees.
 
-I selected XGBoost because it is well suited to structured tabular datasets and can capture nonlinear relationships and interactions between predictor variables.
+I selected XGBoost because it is well suited to structured tabular datasets and can identify nonlinear relationships and interactions between predictor variables.
 
 Its regularization capabilities also provide mechanisms for controlling model complexity and reducing overfitting.
 
-## 6. Project Workflow
+---
 
-The project followed a structured machine learning development process.
+## 6. Machine Learning Methodology
 
-### Step 1: Data Loading and Preparation
+The project followed a structured machine learning workflow, from data preparation through final model evaluation.
+
+### Step 1: Data Preparation
 
 The dataset was loaded into a Pandas DataFrame.
 
-The predictor variables were separated from the target variable:
+The independent variables and dependent target variable were separated:
 
-- `X`: Independent variables containing customer survey responses.
-- `y`: Dependent variable containing the happiness outcome (`Y`).
+- `X`: Six customer survey predictor variables.
+- `y`: Customer happiness classification target (`Y`).
 
-This separation established the input features and prediction target for supervised learning.
+This established the input features and prediction target for supervised learning.
 
-### Step 2: Training and Testing Data Split
+### Step 2: Training, Validation, and Testing
 
-The dataset was divided into training and testing subsets using Scikit-learn's `train_test_split()`.
+The dataset was divided into training, validation, and testing subsets using Scikit-learn's `train_test_split()`.
+
+The initial split allocated:
+
+| Dataset | Proportion |
+|---|---:|
+| Training | 80% |
+| Testing | 20% |
+
+The training subset was subsequently divided into fitting and validation data.
+
+| Dataset | Overall Proportion |
+|---|---:|
+| Model fitting | 60% |
+| Validation | 20% |
+| Final testing | 20% |
 
 The following configuration was used:
 
-| Parameter | Configuration |
-|---|---|
-| Test size | 20% |
-| Training size | 80% |
-| Random state | 21 |
-| Stratification | Enabled |
+- Test size: 20%
+- Random state: 21
+- Stratification: Enabled
 
-Stratified sampling was used to preserve the original target-class distribution across the resulting subsets.
+Stratified sampling preserved the target-class distribution across the data subsets.
 
-This approach helps ensure that the model is trained and evaluated using representative class distributions.
+The validation subset was used to investigate prediction probabilities and classification threshold behavior. The independent test subset was reserved for final performance evaluation.
 
 ### Step 3: XGBoost Model Development
 
-An XGBoost classifier was developed to predict customer happiness based on the six survey features.
+An XGBoost classifier was developed to predict customer happiness using the six survey features.
 
-The model was configured using the following hyperparameters:
+The final model configuration was:
 
 ```python
 xgb_model = XGBClassifier(
@@ -167,183 +188,312 @@ xgb_model = XGBClassifier(
 
 | Hyperparameter | Value | Purpose |
 |---|---:|---|
-| `n_estimators` | 50 | Number of boosting trees constructed during training. |
-| `max_depth` | 2 | Restricts individual tree depth to control model complexity. |
-| `learning_rate` | 0.03 | Controls how much each successive tree contributes to the model. |
-| `min_child_weight` | 3 | Controls the minimum sum of instance weights required in a child node. |
-| `subsample` | 0.8 | Uses 80% of the training observations for each boosting iteration. |
-| `colsample_bytree` | 0.7 | Uses 70% of available features when constructing each tree. |
-| `reg_lambda` | 3 | Applies L2 regularization to discourage overly complex models. |
-| `scale_pos_weight` | 0.85 | Adjusts the relative weighting of the positive class during training. |
-| `random_state` | 21 | Ensures reproducibility of randomized operations. |
-| `eval_metric` | `logloss` | Measures the difference between predicted probabilities and actual class labels. |
-| `n_jobs` | 1 | Restricts execution to one CPU thread. |
+| `n_estimators` | 50 | Number of boosting trees |
+| `max_depth` | 2 | Controls individual tree complexity |
+| `learning_rate` | 0.03 | Controls the contribution of each successive tree |
+| `min_child_weight` | 3 | Controls the minimum instance weight required in a child node |
+| `subsample` | 0.8 | Uses 80% of training observations per boosting iteration |
+| `colsample_bytree` | 0.7 | Uses 70% of available features per tree |
+| `reg_lambda` | 3 | Applies L2 regularization |
+| `scale_pos_weight` | 0.85 | Adjusts positive-class weighting |
+| `random_state` | 21 | Supports reproducibility |
+| `eval_metric` | `logloss` | Evaluates probability prediction error |
+| `n_jobs` | 1 | Restricts execution to one CPU thread |
 
-### Model Configuration Rationale
-
-The selected hyperparameters emphasize controlling model complexity while allowing the classifier to identify meaningful patterns in the survey responses.
-
-In particular:
-
-- **Shallow decision trees (`max_depth=2`):** Limit the complexity of individual trees and reduce the risk of overfitting.
-- **Conservative learning rate (`learning_rate=0.03`):** Allows the model to learn gradually through smaller boosting updates.
-- **Limited boosting iterations (`n_estimators=50`):** Restricts the number of trees used to construct the ensemble.
-- **Regularization (`reg_lambda=3`):** Adds a penalty to discourage excessive model complexity.
-- **Row and feature subsampling:** Introduce additional variation during training and can help improve generalization.
-- **Class weighting (`scale_pos_weight=0.85`):** Slightly reduces the relative weight assigned to positive-class observations during training compared with negative-class observations.
-
-The combination of these parameters establishes a relatively conservative XGBoost configuration designed to control model complexity while learning relationships between customer survey responses and happiness outcomes.
-
-The model was subsequently trained using the designated training dataset.
+The final configuration emphasizes controlling model complexity through shallow decision trees, a conservative learning rate, subsampling, and regularization.
 
 ### Step 4: Prediction Probability Analysis
 
-Rather than immediately using the model's default class predictions, I used the XGBoost `predict_proba()` method.
+Rather than relying exclusively on the model's default class predictions, I used XGBoost's `predict_proba()` method to examine predicted probabilities.
 
-This method generates probability estimates for each class.
-
-The probability associated with class 1 was extracted:
+The probability associated with the positive class (customer happiness) was extracted for threshold evaluation.
 
 ```python
-val_probs = xgb_model.predict_proba(X_val)[:, 1]
+y_prob = xgb_model.predict_proba(X_val)[:, 1]
 ```
 
 These probabilities represent the model's estimated likelihood that an observation belongs to the positive happiness class.
 
-This step was important because it allowed me to investigate how different classification thresholds influence the final predictions.
+This provided the flexibility to investigate how different classification thresholds affect predictive performance.
 
-### Step 5: Classification Threshold Optimization
+### Step 5: Classification Threshold Evaluation
 
-By default, binary classification commonly uses a threshold of 0.50.
+Binary classification models commonly use a default probability threshold of 0.50.
 
-However, this threshold is not necessarily the most appropriate choice for every classification problem.
+However, different thresholds can produce different trade-offs between accuracy, precision, and recall.
 
-I evaluated alternative thresholds ranging from 0.30 to 0.70, using increments of 0.01.
+I evaluated alternative classification thresholds to understand their impact on model predictions and identify an appropriate decision threshold.
 
-For each threshold, the predicted class was determined using:
+The classification rule was:
 
 ```python
-val_pred = (val_probs >= threshold).astype(int)
+y_pred = (y_prob >= threshold).astype(int)
 ```
 
-The model was evaluated using four classification metrics:
+The threshold evaluation considered the following metrics:
 
-**Accuracy**
+- **Accuracy:** Proportion of all predictions classified correctly.
+- **Precision:** Proportion of positive predictions that were actually positive.
+- **Recall:** Proportion of actual positive observations correctly identified.
+- **F1 Score:** Harmonic mean of precision and recall.
 
-Measures the proportion of all predictions that were correct.
+For the final benchmark evaluation, I retained the standard **0.50 classification threshold**.
 
-**Precision**
-
-Measures the proportion of positive predictions that were actually positive.
-
-**Recall**
-
-Measures the proportion of actual positive observations correctly identified by the model.
-
-**F1 Score**
-
-Calculates the harmonic mean of precision and recall, providing a balanced measure of the two metrics.
-
-The threshold evaluation results were stored in a Pandas DataFrame and sorted by accuracy, followed by F1 score.
-
-This allowed me to examine the trade-offs between different classification thresholds and identify a candidate threshold based on the selected evaluation criteria.
+This provided a consistent benchmark for evaluating the final model without introducing an additional threshold adjustment to the reported test results.
 
 ### Step 6: Final Model Evaluation
 
-After selecting the candidate classification threshold, the model was fitted again using the designated training subset.
+After completing model development, the final XGBoost model was evaluated on the independent test dataset.
 
-The model generated positive-class probabilities for the test observations.
+The model generated positive-class probabilities, which were converted into binary predictions using the 0.50 classification threshold.
 
-The selected threshold was then applied to convert those probabilities into binary predictions.
-
-Final model performance was examined using:
+Performance was evaluated using:
 
 - Accuracy
 - Precision
 - Recall
 - F1 Score
+- Balanced Accuracy
 - Classification Report
 - Confusion Matrix
 
-The classification report provides additional insight into class-specific precision, recall, and F1 score.
+These metrics provided a broader understanding of model performance, including how effectively the classifier identified both happy and unhappy customers.
 
-The confusion matrix provides a breakdown of true positives, true negatives, false positives, and false negatives.
+---
 
-These metrics help provide a more complete understanding of classification performance than accuracy alone.
+## 7. Final Model Performance and Business Impact
 
-### Step 7: Feature Importance Analysis
+<details>
+</details>
 
-The final stage involved examining the feature importance values generated by XGBoost.
+The final XGBoost model achieved **73.08% test accuracy**, meeting and exceeding Apziva's required performance benchmark of 73%.
 
-Feature importance provides an indication of how predictor variables contribute to the model's decision-making process.
+### Success Metric Evaluation
 
-This analysis can help identify survey variables that the model relies on when predicting customer happiness.
+| Performance Requirement | Result |
+|---|---:|
+| Required accuracy benchmark | 73.00% |
+| Final test accuracy | **73.08%** |
+| Benchmark status | Achieved |
+| Classification threshold | 0.50 |
 
-Feature importance should be interpreted as a measure of predictive contribution rather than evidence that a particular survey response causes customer happiness.
+The model exceeded the required accuracy benchmark by 0.08 percentage points.
 
-## 7. Model Evaluation and Performance Considerations
+### Final Test Model Performance
 
-An important part of this project was recognizing that model performance cannot be evaluated using accuracy alone.
+| Evaluation Metric | Result |
+|---|---:|
+| Accuracy | **73.08%** |
+| Precision | 76.92% |
+| Recall | 71.43% |
+| F1 Score | **74.07%** |
+| Balanced Accuracy | 73.21% |
+| Classification Threshold | 0.50 |
 
-Different classification metrics provide different perspectives on predictive performance.
+### Classification Report
 
-For example:
+| Class | Precision | Recall | F1 Score | Support |
+|---|---:|---:|---:|---:|
+| 0 (Unhappy) | 0.69 | 0.75 | 0.72 | 12 |
+| 1 (Happy) | 0.77 | 0.71 | 0.74 | 14 |
+| Macro Average | 0.73 | 0.73 | 0.73 | 26 |
+| Weighted Average | 0.73 | 0.73 | 0.73 | 26 |
 
-- Higher accuracy indicates that a greater proportion of predictions are correct.
-- Higher precision reduces the number of incorrectly predicted positive outcomes.
-- Higher recall reduces the number of actual positive outcomes that the model misses.
-- A higher F1 score indicates a stronger balance between precision and recall.
+The model correctly classified 19 of the 26 test observations.
 
-Threshold optimization provided an opportunity to investigate these trade-offs and understand how classification decisions influence the final evaluation metrics.
+The F1 score of 74.07% demonstrates a reasonable balance between precision and recall, while the balanced accuracy of 73.21% indicates that the classifier performed comparably across both customer happiness classes.
 
-### Evaluation Integrity Consideration
+### Confusion Matrix
 
-To maintain separation between model development and final performance evaluation, the dataset was divided into three subsets: training, validation, and testing.
+```text
+[[ 9  3]
+ [ 4 10]]
+```
 
-The original dataset was initially divided into 80% training data and 20% testing data. The training subset was subsequently divided into 75% fitting data and 25% validation data.
+| | Predicted Unhappy | Predicted Happy |
+|---|---:|---:|
+| Actual Unhappy | 9 | 3 |
+| Actual Happy | 4 | 10 |
 
-The workflow consisted of the following stages:
+The confusion matrix shows that:
 
-- **Initial Training (60%):** Used to fit the initial XGBoost model.
-- **Validation (20%):** Used to evaluate prediction probabilities and select the classification threshold.
-- **Final Model Retraining (80%):** After threshold selection, the XGBoost model was retrained using the entire original training dataset, including the observations previously used for validation.
-- **Final Testing (20%):** The retrained model was evaluated using the untouched test dataset and the selected classification threshold.
+- 9 unhappy customers were correctly identified.
+- 10 happy customers were correctly identified.
+- 3 unhappy customers were incorrectly classified as happy.
+- 4 happy customers were incorrectly classified as unhappy.
 
-This approach allows the final model to learn from the entire available training dataset while preserving an independent test dataset for performance evaluation.
+These results demonstrate that the model identified examples from both customer segments rather than exclusively predicting the majority class.
 
-One consideration is that retraining on additional observations can change predicted probabilities, meaning the validation-selected threshold may not remain optimal. Nevertheless, keeping the threshold fixed during final testing provides an independent assessment of the resulting classification approach.
+### Majority-Class Baseline Comparison
 
-## 8. Key Skills Demonstrated
+To determine whether the model provided predictive value beyond a simple classification strategy, I compared its performance against a majority-class baseline.
 
-This project demonstrates practical experience in the following areas:
+The majority-class baseline predicts the most frequently occurring target class for every observation.
+
+In this dataset, the majority class was class 1 (Happy).
+
+| Evaluation | Majority-Class Baseline | XGBoost Model |
+|---|---:|---:|
+| Correct Predictions | 14 | 19 |
+| Total Predictions | 26 | 26 |
+| Accuracy | 53.85% | **73.08%** |
+
+**Accuracy Improvement: 19.23 percentage points**
+
+The XGBoost model correctly classified five additional test observations compared with the majority-class baseline.
+
+This comparison demonstrates that the model learned meaningful predictive patterns from customer survey responses rather than relying exclusively on the distribution of the target variable.
+
+### Business Impact
+
+The results demonstrate the potential value of applying machine learning to customer experience analysis.
+
+By identifying patterns associated with customer happiness, organizations can use predictive insights to:
+
+- Investigate service factors associated with positive customer experiences.
+- Identify potential weaknesses in delivery and courier operations.
+- Evaluate customer perceptions of application usability.
+- Prioritize areas for further customer experience investigation.
+- Support data-driven service improvement initiatives.
+
+Although the model met the established success criterion, its predictions should be used as supplementary analytical insights rather than definitive assessments of individual customer satisfaction.
+
+---
+
+## 8. Feature Importance Analysis
+
+Feature importance analysis was performed using the final XGBoost model to examine which survey variables contributed most to its predictive decisions.
+
+### Feature Importance Results
+
+
+| Feature | Importance | Relative Ranking |
+|---|---:|---:|
+| X1 | 0.342581 | 1 |
+| X5 | 0.226518 | 2 |
+| X6 | 0.205937 | 3 |
+| X3 | 0.134367 | 4 |
+| X4 | 0.058417 | 5 |
+| X2 | 0.032179 | 6 |
+
+### Key Findings
+
+**1. Delivery Timeliness (X1) – 34.26%**
+
+Delivery timeliness was the most influential feature in the model, representing approximately 34.26% of the reported feature importance.
+
+This suggests that delivery performance was an important predictor of customer happiness within the dataset.
+
+**2. Courier Satisfaction (X5) – 22.65%**
+
+Courier satisfaction ranked second, indicating that customers' experiences with delivery personnel contributed substantially to the model's predictions.
+
+**3. Application Usability (X6) – 20.59%**
+
+Application usability ranked third, suggesting that the ease of placing orders through the application was another important predictive factor.
+
+**4. Order Completeness (X3) – 13.44%**
+
+Order completeness demonstrated a moderate contribution to the model's predictive decisions.
+
+**5. Price Satisfaction (X4) – 5.84%**
+
+Price satisfaction had a relatively smaller contribution to the model's predictions.
+
+**6. Order Accuracy (X2) – 3.22%**
+
+Order accuracy had the lowest reported feature importance among the six predictors.
+
+### Feature Importance Visualization
+
+![XGBoost Feature Importance](feature_importance.png)
+### Business Interpretation
+
+The feature importance results suggest that delivery timeliness, courier satisfaction, and application usability were the three strongest predictors of customer happiness in this model.
+
+Together, these features accounted for approximately 77.50% of the model's reported feature importance.
+
+From a business perspective, these findings suggest potential opportunities to investigate:
+
+- Improving delivery reliability and timeliness.
+- Strengthening courier service quality.
+- Improving application usability and the ordering experience.
+
+Feature importance measures predictive contribution within the trained model. These results do not establish that changes to individual features will directly cause improvements in customer happiness.
+
+---
+
+## 9. Model Evaluation Considerations and Limitations
+
+An important aspect of this project was recognizing that classification performance should not be evaluated using accuracy alone.
+
+### Evaluation Integrity
+
+The dataset was divided into separate training, validation, and testing subsets.
+
+The validation dataset supported model development and probability threshold analysis, while the independent test dataset was reserved for final evaluation.
+
+After model development, the final model was retrained using the available training data, and its predictions were evaluated on the untouched test dataset.
+
+The final benchmark evaluation used a fixed classification threshold of 0.50.
+
+This separation helps reduce the risk of test-data leakage and provides a more independent assessment of model performance.
+
+### Dataset Size
+
+One important limitation is the relatively small dataset and independent test sample.
+
+The final test dataset contained only 26 observations, meaning that each additional correct or incorrect prediction changes accuracy by approximately 3.85 percentage points.
+
+Consequently, although the model achieved the required 73% accuracy benchmark, its performance should be interpreted cautiously.
+
+A larger and more representative dataset would help provide a more reliable assessment of the model's generalization ability.
+
+### Model Generalization
+
+The reported results represent performance on one independent test split.
+
+Additional validation using repeated stratified cross-validation and a larger dataset would help determine whether the model's performance remains consistent across different data partitions.
+
+### Feature Importance Limitations
+
+Feature importance identifies variables that contributed to the model's predictions. It does not establish causation or prove that a particular operational improvement will increase customer satisfaction.
+
+Further analysis would be required to validate these findings and quantify their potential business impact.
+
+---
+
+## 10. Key Skills Demonstrated
 
 ### Machine Learning
 
-- Supervised learning
-- Binary classification
-- Gradient boosting
-- XGBoost model development
-- Hyperparameter configuration
-- Model regularization
+- Supervised Learning
+- Binary Classification
+- XGBoost and Gradient Boosting
+- Hyperparameter Configuration
+- Model Regularization
+- Predictive Modeling
 
-### Data Science
+### Data Science and Analytics
 
-- Structured dataset preparation
-- Feature and target separation
-- Stratified sampling
-- Prediction probability analysis
-- Classification threshold evaluation
-- Feature importance analysis
+- Structured Dataset Preparation
+- Exploratory Data Analysis
+- Stratified Sampling
+- Prediction Probability Analysis
+- Classification Threshold Evaluation
+- Feature Importance Analysis
+- Business Insights and Interpretation
 
 ### Model Evaluation
 
 - Accuracy
 - Precision
 - Recall
-- F1 score
-- Classification reports
-- Confusion matrices
-- Performance trade-off analysis
+- F1 Score
+- Balanced Accuracy
+- Confusion Matrix Analysis
+- Majority-Class Baseline Comparison
+- Model Performance Evaluation
 
 ### Technical Tools
 
@@ -354,19 +504,24 @@ This project demonstrates practical experience in the following areas:
 - XGBoost
 - Git and GitHub
 
-## 9. Repository Structure
+---
+
+## 11. Repository Structure
 
 ```text
 t3EEhgPPsfuMSInm/
 │
 ├── Project_HC.py
 ├── README.md
+├── README_Happy_Customers.md
 └── requirements.txt
 ```
 
-The dataset is required to execute the project but may need to be downloaded separately if it is not included in the repository.
+The ACME Happiness Survey 2020 dataset is required to execute the project and may need to be downloaded separately.
 
-## 10. How to Run the Project
+---
+
+## 12. How to Run the Project
 
 ### Prerequisites
 
@@ -409,6 +564,12 @@ source .venv/bin/activate
 ### Step 4: Install Dependencies
 
 ```bash
+pip install -r requirements.txt
+```
+
+Alternatively:
+
+```bash
 pip install numpy pandas scikit-learn xgboost
 ```
 
@@ -416,7 +577,7 @@ pip install numpy pandas scikit-learn xgboost
 
 Ensure that `ACME-HappinessSurvey2020.csv` is available locally.
 
-Update the file path in `Project_HC.py` to reference the dataset location on your computer.
+Update the dataset path in `Project_HC.py` to reference its location.
 
 For example:
 
@@ -430,31 +591,22 @@ df = pd.read_csv("ACME-HappinessSurvey2020.csv")
 python Project_HC.py
 ```
 
-The script will train the XGBoost classifier, generate prediction probabilities, evaluate classification thresholds, display model performance metrics, and output feature importance values.
-
-## 11. Conclusion
-
-This project provided an opportunity to apply supervised machine learning techniques to a practical customer experience prediction problem.
-
-Through the development of an XGBoost classification model, I explored how structured survey responses can be used to identify patterns associated with customer happiness.
-
-One of the most valuable aspects of this project was investigating prediction probabilities and classification threshold optimization. This demonstrated the importance of looking beyond default model predictions and evaluating how different classification decisions affect accuracy, precision, recall, and F1 score.
-
-I also gained practical experience configuring gradient boosting parameters, evaluating model performance, and examining feature importance to better understand model behavior.
-
-**From a professional perspective, this project demonstrates my ability to approach a machine learning problem systematically, translate a business objective into a predictive modeling task, implement an appropriate classification algorithm, and critically evaluate its performance.**
-
-My contribution reflects an understanding that successful data science is not simply about building a model. It also involves understanding the business problem, selecting appropriate techniques, evaluating results responsibly, and communicating meaningful insights to support informed decision-making.
+The script trains the XGBoost classifier, generates prediction probabilities, evaluates classification thresholds, calculates final model performance metrics, and displays feature importance results.
 
 ---
 
-## Author
+## 13. Conclusion
 
-**Vince Ike Osayande**
+This project demonstrated the application of supervised machine learning to a practical customer experience prediction problem.
 
-M.S. Computer Science – Artificial Intelligence and Machine Learning
+Using Python and XGBoost, I developed a binary classification model to predict customer happiness based on six survey responses.
 
-AWS Certified Machine Learning Engineer – Associate
+The final model achieved **73.08% test accuracy and a 74.07% F1 score**, meeting Apziva's established success criterion of 73% accuracy or higher.
 
-- [GitHub Profile](https://github.com/Vince-Ike)
-- [Project Repository](https://github.com/Vince-Ike/t3EEhgPPsfuMSInm)
+Furthermore, the model outperformed the majority-class baseline by **19.23 percentage points**, correctly classifying 19 of 26 test observations compared with 14 correct predictions from the baseline.
+
+Feature importance analysis identified delivery timeliness, courier satisfaction, and application usability as the three strongest predictors of customer happiness within the model.
+
+Beyond meeting the project's performance benchmark, this project strengthened my practical experience in predictive modeling, XGBoost configuration, classification threshold evaluation, model performance assessment, and translating machine learning findings into potential business insights.
+
+Most importantly, it reinforced the importance of evaluating machine learning models beyond accuracy alone, considering baseline performance, class-specific metrics, model limitations, and the practical relevance of predictive results.

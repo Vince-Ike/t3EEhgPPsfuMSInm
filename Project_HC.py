@@ -9,6 +9,7 @@
 # and evaluate final test performance.
 # ============================================================
 from pathlib import Path
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -326,15 +327,18 @@ print("=" * 55)
 
 print(prediction_results.to_string(index=False))
 
+
 # ============================================================
-# Feature Importance
+# Feature Importance Analysis and Visualization
 # ============================================================
 
+# Extract feature importance from the trained XGBoost model
 feature_importance = pd.DataFrame({
     "Feature": X.columns,
     "Importance": xgb_model.feature_importances_
 })
 
+# Sort features by importance in descending order
 feature_importance = feature_importance.sort_values(
     by="Importance",
     ascending=False
@@ -344,6 +348,52 @@ print("\nFeature Importance")
 print("=" * 40)
 
 print(feature_importance.to_string(index=False))
+
+# ============================================================
+# Visualize Feature Importance
+# ============================================================
+
+plt.figure(figsize=(10, 6))
+
+plt.barh(
+    feature_importance["Feature"],
+    feature_importance["Importance"]
+)
+
+# Display the most important feature at the top
+plt.gca().invert_yaxis()
+
+# Add chart labels and title
+plt.title(
+    "XGBoost Feature Importance - Happy Customers",
+    fontsize=14,
+    fontweight="bold"
+)
+
+plt.xlabel("Importance Score", fontsize=11)
+plt.ylabel("Survey Features", fontsize=11)
+
+# Add importance values beside each bar
+for index, value in enumerate(feature_importance["Importance"]):
+    plt.text(
+        value + 0.005,
+        index,
+        f"{value:.4f}",
+        va="center",
+        fontsize=10
+    )
+
+plt.tight_layout()
+
+# Save visualization for GitHub README
+plt.savefig(
+    "feature_importance.png",
+    dpi=300,
+    bbox_inches="tight"
+)
+
+plt.show()
+
 
 # ============================================================
 # Final XGBoost Model Parameters
